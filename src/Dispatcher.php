@@ -57,6 +57,10 @@ class Dispatcher {
      */
     protected $lastReceipt;
 
+
+    protected $response;
+
+
     /**
      *
      * @param Certificate $cert
@@ -170,11 +174,11 @@ class Dispatcher {
     public function send(Receipt $receipt, $check = FALSE) {
         $this->initSoapClient();
 
-        $response = $this->processData($receipt, $check);
+        $this->response = $this->processData($receipt, $check);
 
-        isset($response->Chyba) && $this->processError($response->Chyba);
+        isset($this->response->Chyba) && $this->processError($this->response->Chyba);
 
-        $this->fik = $check ? TRUE : $response->Potvrzeni->fik;
+        $this->fik = $check ? TRUE : $this->response->Potvrzeni->fik;
         return $this->fik;
     }
 
@@ -305,6 +309,10 @@ class Dispatcher {
     public function getLastReceipt()
     {
         return $this->lastReceipt;
+    }
+
+    public function getResponse(){
+        return $this->response;
     }
 
 }
